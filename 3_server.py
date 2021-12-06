@@ -11,25 +11,18 @@ password = 'b193a4a95ef9fb64'
 
 ftp = ftplib.FTP(server, user, password)
 
-from pytz import timezone
-from datetime import datetime
-import time
+# from pytz import timezone
+# from datetime import datetime
 
-while(True):
+# while(True):
     
-    date = datetime.now()
-    tz = timezone("Etc/GMT+7")
-    date = date.replace(tzinfo=tz)
-    time.sleep(1)
-    ret, frame = cam.read() 
-
-    cv2.imwrite('4.png', frame)
-    f = open('4.png', 'rb')
-    ftp.storbinary('STOR 4.png', f)    
-    ftp.quit()
-
-
-
+    # date = datetime.now()
+    # tz = timezone("Etc/GMT+7")
+    # date = date.replace(tzinfo=tz)    
+ret, frame = cam.read() 
 time.sleep(1)
+cv2.imwrite('4.png', frame)
+f = open('4.png', 'rb')
+ftp.storbinary('STOR 4.png', f)    
 
-
+ftp.quit()
