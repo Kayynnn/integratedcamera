@@ -1,0 +1,2 @@
+#retrieve data from firebase
+https://firebase.google.com/docs/database/admin/retrieve-data?hl=id
