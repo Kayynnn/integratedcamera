@@ -4,6 +4,19 @@ import cv2
 import time
 from PIL import Image
 import math
+import firebase_admin
+from firebase_admin import credentials,db 
+#export credential key
+ced = credentials.Certificate("ya.json")
+
+# In the above line <path_to_generated_private_key>
+# is a placeholder for the generate JSON file containing
+# your private key.
+
+#initiliaze realtime database
+default_app = firebase_admin.initialize_app(ced, {'databaseURL': 'https://integratedcamera-36d77-default-rtdb.firebaseio.com'})
+ref = db.reference('interval')
+interval = ref.get()
 
 server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
@@ -25,14 +38,15 @@ def send(s, u, p):
   ftp.storbinary('STOR 4-1.png', f)
   ftp.quit()
 
-ret, frame = cam.read()
-time.sleep(1)
-cv2.imwrite('4.png', frame)
+while(True):
+  time.sleep(interval*60)
+  ret, frame = cam.read()
+  cv2.imwrite('4.png', frame)
 
-img = './4.png'
-size = os.path.getsize(img)
+  img = './4.png'
+  size = os.path.getsize(img)
 
-sizing(img)
-send(server, user, password)
+  sizing(img)
+  send(server, user, password)
 
 # capture >> resize >> sending
