@@ -1,5 +1,11 @@
+import os
+import ftplib
 import cv2
 import time
+from PIL import Image
+import math
+import firebase_admin
+from firebase_admin import credentials,db 
 
 cam1 = cv2.VideoCapture(0)
 cam2 = cv2.VideoCapture(2)
@@ -13,7 +19,8 @@ while (True):
     # cv2.imshow('cam2', frame2)
 
     # if cv2.waitKey(10) & 0xFF == ord('c'): 
-    time.sleep(3)
+    time.sleep(5)
     x = x + 1
     cv2.imwrite('cam1_'+str(x)+'.png', frame1)
     cv2.imwrite('cam2_'+str(x)+'.png', frame2)
+
