@@ -10,6 +10,10 @@ ced = credentials.Certificate("ya.json")
 default_app = firebase_admin.initialize_app(ced, {'databaseURL': 'https://integratedcamera-36d77-default-rtdb.firebaseio.com'})
 ref = db.reference('interval')
 #snapshot = ref.order_by_child('interval').get()
-print(ref.get())
-
+while True:
+    try:
+        interval = ref.get()
+        print(interval)
+    except:
+        print("Firebase error")
 

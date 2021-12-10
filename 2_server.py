@@ -6,47 +6,75 @@ from PIL import Image
 import math
 import firebase_admin
 from firebase_admin import credentials,db 
-#export credential key
+from pytz import HOUR, timezone
+from datetime import datetime
+import time
+
+# export credential key
 ced = credentials.Certificate("ya.json")
 
-# In the above line <path_to_generated_private_key>
-# is a placeholder for the generate JSON file containing
-# your private key.
-
-#initiliaze realtime database
+# initiliaze realtime database
 default_app = firebase_admin.initialize_app(ced, {'databaseURL': 'https://integratedcamera-36d77-default-rtdb.firebaseio.com'})
 ref = db.reference('interval')
-interval = ref.get()
 
+# login credentials
 server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
 password = 'b193a4a95ef9fb64'
 
-cam = cv2.VideoCapture(0)
-
-def sizing(i):
-  foo = Image.open(i)
-  x, y = foo.size
-  mult = 0.4
-  x2, y2 = math.floor(x*mult), math.floor(y*mult)
-  foo = foo.resize((x2,y2),Image.ANTIALIAS)
-  foo.save("4-1.png",quality=100)  
-
+# server login and send
 def send(s, u, p):
   ftp = ftplib.FTP(s, u, p)
-  f = open('4-1.png', 'rb')
-  ftp.storbinary('STOR 4-1.png', f)
+  for z in range(2):
+    f = open(imgname[z], 'rb')
+    ftp.storbinary('STOR '+imgname[z], f)
   ftp.quit()
 
 while(True):
-  time.sleep(interval*3)
-  ret, frame = cam.read()
-  cv2.imwrite('4.png', frame)
+  # capture wait
+  # cv2.waitKey(5000)
+  try:
+    interval = ref.get() 
+  except:
+    print("Cant get the interval")
+  # camera id
+  try:
+    cam1 = cv2.VideoCapture(0)
+    cam2 = cv2.VideoCapture(1)
+  except:
+    print("Camera Error")
+  #timestamp
+  date = datetime.now()
+  tz = timezone("Etc/GMT+7")
+  date = date.replace(tzinfo=tz)
+  
+  # getting camera frames
+  ret1, frame1 = cam1.read()
+  ret2, frame2 = cam2.read()
+  
+  # naming image files based on camera and timestamp
+  imgname = [ "cam1_"+str(date)+".png",
+              "cam2_"+str(date)+".png",
+              "cam3_"+str(date)+".png",
+              "cam4_"+str(date)+".png"]  
 
-  img = './4.png'
-  size = os.path.getsize(img)
+  # saving the images
+  cv2.imwrite(imgname[0], frame1)
+  cv2.imwrite(imgname[1], frame2)
 
-  sizing(img)
+  # release after capture image
+  cam1.release()
+  cam2.release()
+
+  # resizing the image
+  for i in range(2): 
+    foo = Image.open(imgname[i])
+    x, y = foo.size
+    mult = 0.4
+    x2, y2 = math.floor(x*mult), math.floor(y*mult)
+    foo = foo.resize((x2,y2),Image.ANTIALIAS)
+    foo.save(imgname[i],quality=100)
+
+  # send to server with interval in seconds
   send(server, user, password)
-
-# capture >> resize >> sending
+  time.sleep(interval*3)
