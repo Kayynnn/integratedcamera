@@ -70,11 +70,12 @@ while(True):
   for i in range(2): 
     foo = Image.open(imgname[i])
     x, y = foo.size
-    mult = 0.4
+    mult = 1
     x2, y2 = math.floor(x*mult), math.floor(y*mult)
     foo = foo.resize((x2,y2),Image.ANTIALIAS)
-    foo.save(imgname[i],quality=100)
+    foo.save(imgname[i],optimize=True, quality=0.1)
 
   # send to server with interval in seconds
   send(server, user, password)
   time.sleep(interval*3)
+  # test
