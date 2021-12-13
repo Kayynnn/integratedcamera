@@ -4,18 +4,18 @@ import cv2
 import time
 from PIL import Image
 import math
-import firebase_admin
-from firebase_admin import credentials,db 
+# import firebase_admin
+# from firebase_admin import credentials,db 
 from pytz import HOUR, timezone
 from datetime import datetime
 import time
 
 # export credential key
-ced = credentials.Certificate("ya.json")
+# ced = credentials.Certificate("ya.json")
 
 # initiliaze realtime database
-default_app = firebase_admin.initialize_app(ced, {'databaseURL': 'https://integratedcamera-36d77-default-rtdb.firebaseio.com'})
-ref = db.reference('interval')
+# default_app = firebase_admin.initialize_app(ced, {'databaseURL': 'https://integratedcamera-36d77-default-rtdb.firebaseio.com'})
+# ref = db.reference('interval')
 
 # login credentials
 server = 'telematics.transtrack.id'
@@ -33,10 +33,10 @@ def send(s, u, p):
 while(True):
   # capture wait
   # cv2.waitKey(5000)
-  try:
-    interval = ref.get() 
-  except:
-    print("Cant get the interval")
+  # try:
+  #   interval = ref.get() 
+  # except:
+  #   print("Cant get the interval")
   # camera id
   try:
     cam1 = cv2.VideoCapture(0)
@@ -77,5 +77,4 @@ while(True):
 
   # send to server with interval in seconds
   send(server, user, password)
-  time.sleep(interval*3)
-  # test
+  time.sleep(3)
