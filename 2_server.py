@@ -53,10 +53,10 @@ while(True):
   ret2, frame2 = cam2.read()
   
   # naming image files based on camera and timestamp
-  imgname = [ "cam1_"+str(date)+".png",
-              "cam2_"+str(date)+".png",
-              "cam3_"+str(date)+".png",
-              "cam4_"+str(date)+".png"]  
+  imgname = [ "cam1_"+str(date)+".jpg",
+              "cam2_"+str(date)+".jpg",
+              "cam3_"+str(date)+".jpg",
+              "cam4_"+str(date)+".jpg"]  
 
   # saving the images
   cv2.imwrite(imgname[0], frame1)
@@ -70,10 +70,10 @@ while(True):
   for i in range(2): 
     foo = Image.open(imgname[i])
     x, y = foo.size
-    mult = 1
+    mult = 1.5
     x2, y2 = math.floor(x*mult), math.floor(y*mult)
     foo = foo.resize((x2,y2),Image.ANTIALIAS)
-    foo.save(imgname[i],optimize=True, quality=0.1)
+    foo.save(imgname[i],optimize=True, quality=50)
 
   # send to server with interval in seconds
   send(server, user, password)
