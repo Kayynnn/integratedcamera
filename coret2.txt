@@ -1,0 +1,10 @@
+interval 1 menit
+pembacaan pertama itu 1:20
+pengen 2.20 itu jepret
+
+proses jepret, resize, beres baru time?
+
+time = blablabla
+
+if time + innterval >= ???:
+    blablabla

@@ -2,6 +2,8 @@ import cv2
 
 cap = cv2.VideoCapture(1)
 
+
+# path = '/run/user/1000/gvfs/mtp:host=Android_Android_1ed04da/Internal shared storage/DCIM/output.avi'
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 out = cv2.VideoWriter('output.avi', fourcc, 30, (640,480))
 
