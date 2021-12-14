@@ -23,11 +23,6 @@ server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
 password = 'b193a4a95ef9fb64'
 
-# video format and save
-format = cv2.VideoWriter_fourcc(*'MPEG')
-out1 = cv2.VideoWriter('output.avi', format, 15, (640,480))
-out2 = cv2.VideoWriter('output2.avi', format, 15, (640,480))
-
 cam1 = cv2.VideoCapture(0)
 cam2 = cv2.VideoCapture(1)
 
@@ -60,14 +55,6 @@ def pict_capture():
 schedule.every(3).seconds.do(pict_capture)
 
 while(True):
-  # video frames
-  retv1, framev1 = cam1.read()
-  retv2, framev2 = cam2.read()
-
-  # video write
-  out1.write(framev1)
-  out2.write(framev2)
-
   # firebase get interval
   try:
     interval = 1#ref.get() 
@@ -82,10 +69,6 @@ while(True):
   # getting camera frames
   ret1, frame1 = cam1.read()
   ret2, frame2 = cam2.read()
-  
-  # show the frames
-  # cv2.imshow('vid1', frame1)
-  # cv2.imshow('vid2', frame2)
 
   # naming image files based on camera and timestamp
   imgname = [ "cam1_"+str(date)+".jpg",
@@ -93,5 +76,4 @@ while(True):
               "cam3_"+str(date)+".jpg",
               "cam4_"+str(date)+".jpg"]  
   
-  # 
   schedule.run_pending()
