@@ -25,7 +25,7 @@ password = 'b193a4a95ef9fb64'
 
 cam1 = cv2.VideoCapture(0)
 cam2 = cv2.VideoCapture(1)
-
+a
 # server login and send
 def send(s, u, p):
   ftp = ftplib.FTP(s, u, p)
@@ -52,8 +52,8 @@ def pict_capture():
   send(server, user, password)
 
 # scheduling time
-schedule.every(3).seconds.do(pict_capture)
-
+#schedule.every(3).seconds.do(pict_capture)
+timeread  = time.time()
 while(True):
   # firebase get interval
   try:
@@ -76,4 +76,4 @@ while(True):
               "cam3_"+str(date)+".jpg",
               "cam4_"+str(date)+".jpg"]  
   
-  schedule.run_pending()
+  #schedule.run_pending()

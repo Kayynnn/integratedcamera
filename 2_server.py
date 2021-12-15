@@ -9,7 +9,7 @@ import math
 from pytz import HOUR, timezone
 from datetime import datetime
 import time
-import schedule
+# import schedule
 
 # export credential key
 # ced = credentials.Certificate("ya.json")
@@ -39,59 +39,77 @@ def send(s, u, p):
     ftp.storbinary('STOR '+imgname[z], f)
   ftp.quit()
 
-def pict_capture():
-  # saving the images
-  cv2.imwrite(imgname[0], frame1)
-  cv2.imwrite(imgname[1], frame2)
+# #def pict_capture():
+#   # saving the images
+#   cv2.imwrite(imgname[0], frame1)
+#   cv2.imwrite(imgname[1], frame2)
 
-  # resizing the image
-  for i in range(2): 
-    foo = Image.open(imgname[i])
-    x, y = foo.size
-    mult = 1.5
-    x2, y2 = math.floor(x*mult), math.floor(y*mult)
-    foo = foo.resize((x2,y2),Image.ANTIALIAS)
-    foo.save(imgname[i],optimize=True, quality=50)
+#   # resizing the image
+#   for i in range(2): 
+#     foo = Image.open(imgname[i])
+#     x, y = foo.size
+#     mult = 1.5
+#     x2, y2 = math.floor(x*mult), math.floor(y*mult)
+#     foo = foo.resize((x2,y2),Image.ANTIALIAS)
+#     foo.save(imgname[i],optimize=True, quality=50)
 
-  # send to server with interval in seconds
-  send(server, user, password)
+#   # send to server with interval in seconds
+#   send(server, user, password)
 
 # scheduling time
-schedule.every(3).seconds.do(pict_capture)
+#schedule.every(3).seconds.do(pict_capture)
 
+timeread = time.time()
+do = "jalan"
+timenow = 0
 while(True):
-  # video frames
-  retv1, framev1 = cam1.read()
-  retv2, framev2 = cam2.read()
-
-  # video write
-  out1.write(framev1)
-  out2.write(framev2)
-
   # firebase get interval
   try:
     interval = 1#ref.get() 
   except:
     print("Cant get the interval")
 
-  #timestamp
-  date = datetime.now()
-  tz = timezone("Etc/GMT+7")
-  date = date.replace(tzinfo=tz)
-  
   # getting camera frames
   ret1, frame1 = cam1.read()
   ret2, frame2 = cam2.read()
-  
-  # show the frames
-  # cv2.imshow('vid1', frame1)
-  # cv2.imshow('vid2', frame2)
 
-  # naming image files based on camera and timestamp
-  imgname = [ "cam1_"+str(date)+".jpg",
-              "cam2_"+str(date)+".jpg",
-              "cam3_"+str(date)+".jpg",
-              "cam4_"+str(date)+".jpg"]  
+  # video write
+  out1.write(frame1)
+  out2.write(frame2)
+  
+  if do == "jalan" or timenow >= interval*60:
+    #timestamp
+    date = datetime.now()
+    tz = timezone("Etc/GMT+7")
+    date = date.replace(tzinfo=tz)
+
+    # naming image files based on camera and timestamp
+    imgname = [ "cam1_"+str(date)+".jpg",
+                "cam2_"+str(date)+".jpg",
+                "cam3_"+str(date)+".jpg",
+                "cam4_"+str(date)+".jpg"]    
+
+    cv2.imwrite(imgname[0], frame1)
+    cv2.imwrite(imgname[1], frame2)
+
+    # resizing the image
+    for i in range(2): 
+      foo = Image.open(imgname[i])
+      x, y = foo.size
+      mult = 1.5
+      x2, y2 = math.floor(x*mult), math.floor(y*mult)
+      foo = foo.resize((x2,y2),Image.ANTIALIAS)
+      foo.save(imgname[i],optimize=True, quality=50)
+
+    # send to server with interval in seconds
+    # send(server, user, password)
+
+    do = "  "
+    timeread += timenow  
+    
+  timenow = time.time() - timeread
+  print("Timenow : ",timenow)
+  print("Timeread : ", timeread) 
   
   # 
-  schedule.run_pending()
+  #schedule.run_pending()

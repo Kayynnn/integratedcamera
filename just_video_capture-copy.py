@@ -1,16 +1,16 @@
 import cv2
 
-cam1 = cv2.VideoCapture(0)
+cam1 = cv2.VideoCapture(1)
 # cam2 = cv2.VideoCapture(1)
 
 # video format and save
-format = cv2.VideoWriter_fourcc(*'MPEG')
-out1 = cv2.VideoWriter('output.avi', format, 24, (640,480))
+format = cv2.VideoWriter_fourcc(*'X264')
+out1 = cv2.VideoWriter('output.mp4', format, 24, (640,480))
 # out2 = cv2.VideoWriter('output2.avi', format, 24, (640,480))
 
 while(True):
   # video frames
-  retv1, framev1 = cam1.read()
+  retv1, framev1 = cam1.read() 
   # retv2, framev2 = cam2.read()
 
   # video write
