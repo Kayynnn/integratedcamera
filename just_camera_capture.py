@@ -9,7 +9,7 @@ import math
 from pytz import HOUR, timezone
 from datetime import datetime
 import time
-import schedule
+# import schedule
 
 # export credential key
 # ced = credentials.Certificate("ya.json")
@@ -17,7 +17,7 @@ import schedule
 # initiliaze realtime database
 # default_app = firebase_admin.initialize_app(ced, {'databaseURL': 'https://integratedcamera-36d77-default-rtdb.firebaseio.com'})
 # ref = db.reference('interval')
-
+# 
 # login credentials
 server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
@@ -25,7 +25,7 @@ password = 'b193a4a95ef9fb64'
 
 cam1 = cv2.VideoCapture(0)
 cam2 = cv2.VideoCapture(1)
-a
+
 # server login and send
 def send(s, u, p):
   ftp = ftplib.FTP(s, u, p)
