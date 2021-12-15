@@ -59,13 +59,12 @@ def send(s, u, p):
 # scheduling time
 #schedule.every(3).seconds.do(pict_capture)
 
-timeread = time.time()
+
 do = "jalan"
-timenow = 0
 while(True):
   # firebase get interval
   try:
-    interval = 1#ref.get() 
+    fbinterval = 1#ref.get() 
   except:
     print("Cant get the interval")
 
@@ -77,7 +76,8 @@ while(True):
   out1.write(frame1)
   out2.write(frame2)
   
-  if do == "jalan" or timenow >= interval*60:
+
+  if do == "jalan" or interval  >= fbinterval*60:
     #timestamp
     date = datetime.now()
     tz = timezone("Etc/GMT+7")
@@ -100,16 +100,14 @@ while(True):
       x2, y2 = math.floor(x*mult), math.floor(y*mult)
       foo = foo.resize((x2,y2),Image.ANTIALIAS)
       foo.save(imgname[i],optimize=True, quality=50)
-
+    start = time.perf_counter()
     # send to server with interval in seconds
     # send(server, user, password)
 
-    do = "  "
-    timeread += timenow  
-    
-  timenow = time.time() - timeread
-  print("Timenow : ",timenow)
-  print("Timeread : ", timeread) 
-  
+    do = "  "  
+   
+  end = time.perf_counter()
+  interval = (end - start)
+  print(interval)     
   # 
   #schedule.run_pending()
