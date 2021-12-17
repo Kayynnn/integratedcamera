@@ -12,12 +12,12 @@ while True:
         while lines == []:
           f = open('queue.txt')
           lines = f.readlines()
-          print(lines)
 
         print(lines)
         ftp = ftplib.FTP(server, user, password)
         for z in lines:
-            imgname = z.strip() 
+            imgname = z.strip()
+            print(imgname)
             if os.path.isfile(imgname):     
                 img = open(imgname, 'rb')
                 ftp.storbinary('STOR '+imgname, img)
