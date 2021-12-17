@@ -1,4 +1,4 @@
 function run_py_codes() {
- python3 ./just_camera_capture.py &
- python3 ./just_video_capture.py &
+ python3 ./send.py &
+ python3 ./2_server.py &
 }

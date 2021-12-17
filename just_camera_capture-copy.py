@@ -23,7 +23,7 @@ server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
 password = 'b193a4a95ef9fb64'
 
-cam1 = cv2.VideoCapture(1)
+cam1 = cv2.VideoCapture(0)
 # cam2 = cv2.VideoCapture(1)
 
 # server login and send
@@ -71,7 +71,6 @@ while(True):
   # ret2, frame2 = cam2.read()
 
   # naming image files based on camera and timestamp
-  imgname = ["cam1_"+str(date)+".jpg",
-             "cam2_"+str(date)+".jpg"]  
+  imgname = ["./pictures/cam1_"+str(date)+".jpg"]
   
   schedule.run_pending()

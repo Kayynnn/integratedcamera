@@ -21,13 +21,15 @@ server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
 password = 'b193a4a95ef9fb64'
 
+
+
 # video format and save
 format = cv2.VideoWriter_fourcc(*'XVID')
 out1 = cv2.VideoWriter('output.avi', format, 15, (640,480))
 out2 = cv2.VideoWriter('output2.avi', format, 15, (640,480))
 
 cam1 = cv2.VideoCapture(0)
-cam2 = cv2.VideoCapture(1)
+cam2 = cv2.VideoCapture(2)
 
 # server login and send
 # def send(s, u, p):
@@ -76,15 +78,15 @@ while(True):
   out2.write(frame2)
   
 
-  if do == "jalan" or interval  >= fbinterval*30:
+  if do == "jalan" or interval >= fbinterval*30:
     #timestamp
     date = datetime.now()
     tz = timezone("Etc/GMT+7")
     date = date.replace(tzinfo=tz)
 
     # naming image files based on camera and timestamp
-    imgname = [ "cam1_"+str(date)+".jpg",
-                "cam2_"+str(date)+".jpg"]
+    imgname = [ "./pictures/cam1_"+str(date)+".jpg",
+                "./pictures/cam2_"+str(date)+".jpg"]
                 # "cam3_"+str(date)+".jpg",
                 # "cam4_"+str(date)+".jpg"]    
 

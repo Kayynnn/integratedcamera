@@ -12,6 +12,7 @@ while True:
         while lines == []:
           f = open('queue.txt')
           lines = f.readlines()
+          print(lines)
 
         print(lines)
         ftp = ftplib.FTP(server, user, password)
