@@ -20,6 +20,14 @@ server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
 password = 'b193a4a95ef9fb64'
 
+import subprocess
+x = ""
+
+while x == "":
+  x = subprocess.check_output("ls /media/rostugs", shell=True)
+  x = str(x.strip()).strip("b\'")
+  print(x)
+
 # video time stamp
 date = datetime.now()
 tz = timezone("Etc/GMT+7")
@@ -27,8 +35,8 @@ date = date.replace(tzinfo=tz)
 
 # video format and save
 format = cv2.VideoWriter_fourcc(*'XVID')
-out1 = cv2.VideoWriter('cam1_'+date+'.avi', format, 15, (640,480))
-out2 = cv2.VideoWriter('cam2_'+date+'.avi', format, 15, (640,480))
+out1 = cv2.VideoWriter('/media/rostugs/'+x+'/cam1_'+str(date)+'.avi', format, 15, (640,480))
+out2 = cv2.VideoWriter('/media/rostugs/'+x+'/cam2_'+str(date)+'.avi', format, 15, (640,480))
 
 # camera id
 cam1 = cv2.VideoCapture(0)
