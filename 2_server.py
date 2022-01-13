@@ -38,9 +38,25 @@ format = cv2.VideoWriter_fourcc(*'XVID')
 out1 = cv2.VideoWriter('/media/rostugs/'+x+'/cam1_'+str(date)+'.avi', format, 15, (640,480))
 out2 = cv2.VideoWriter('/media/rostugs/'+x+'/cam2_'+str(date)+'.avi', format, 15, (640,480))
 
+# checks the first 10 indexes.
+index = 0
+arr = []
+i = 10
+while i > 0:
+    cap = cv2.VideoCapture(index)
+    # ret, frame = cap.read()
+    if cap.read()[0]:
+        arr.append(index)
+        # cv2.imshow('frame', frame)
+        # time.sleep(5)
+        cap.release()
+    index += 1
+    i -= 1
+print(arr)
+
 # camera id
-cam1 = cv2.VideoCapture(0)
-cam2 = cv2.VideoCapture(2)
+cam1 = cv2.VideoCapture(arr[1])
+cam2 = cv2.VideoCapture(arr[2])
 
 # make sure theres no extra files when starting program
 if os.path.isfile('mulai_interval.txt'):
