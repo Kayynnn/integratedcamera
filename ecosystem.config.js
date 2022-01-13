@@ -1,12 +1,14 @@
 module.exports = {
-  apps : [{
+  apps :[{
     name: 'send',
-    script: 'send.py',
-    watch: '.'
+    script: './send.py',
+    watch: '.',
+    interpreter: 'python3'
   }, {
     name: 'server',
-    script: '2_server.py',
-    watch: '.'
+    script: './2_server.py',
+    watch: '.',
+    interpreter: 'python3'
   }],
 
   deploy : {

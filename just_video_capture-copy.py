@@ -1,11 +1,11 @@
 import cv2
 
-cam1 = cv2.VideoCapture(1)
+cam1 = cv2.VideoCapture(3)
 # cam2 = cv2.VideoCapture(1)
 
 # video format and save
-format = cv2.VideoWriter_fourcc(*'X264')
-out1 = cv2.VideoWriter('output.mp4', format, 24, (640,480))
+format = cv2.VideoWriter_fourcc(*'VXID')
+out1 = cv2.VideoWriter('output.avi', format, 24, (640,480))
 # out2 = cv2.VideoWriter('output2.avi', format, 24, (640,480))
 
 while(True):

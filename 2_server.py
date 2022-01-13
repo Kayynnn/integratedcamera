@@ -23,10 +23,10 @@ password = 'b193a4a95ef9fb64'
 import subprocess
 x = ""
 
-while x == "":
-  x = subprocess.check_output("ls /media/rostugs", shell=True)
-  x = str(x.strip()).strip("b\'")
-  print(x)
+# while x == "":
+#   x = subprocess.check_output("ls ./", shell=True)
+#   x = str(x.strip()).strip("b\'")
+#   print(x)
 
 # video time stamp
 date = datetime.now()
@@ -35,8 +35,8 @@ date = date.replace(tzinfo=tz)
 
 # video format and save
 format = cv2.VideoWriter_fourcc(*'XVID')
-out1 = cv2.VideoWriter('/media/rostugs/'+x+'/cam1_'+str(date)+'.avi', format, 15, (640,480))
-out2 = cv2.VideoWriter('/media/rostugs/'+x+'/cam2_'+str(date)+'.avi', format, 15, (640,480))
+out1 = cv2.VideoWriter('./'+x+'/cam1_'+str(date)+'.avi', format, 15, (640,480))
+out2 = cv2.VideoWriter('./'+x+'/cam2_'+str(date)+'.avi', format, 15, (640,480))
 
 # checks the first 10 indexes.
 index = 0
@@ -55,8 +55,8 @@ while i > 0:
 print(arr)
 
 # camera id
-cam1 = cv2.VideoCapture(arr[1])
-cam2 = cv2.VideoCapture(arr[2])
+cam1 = cv2.VideoCapture(arr[0])
+cam2 = cv2.VideoCapture(arr[1])
 
 # make sure theres no extra files when starting program
 if os.path.isfile('mulai_interval.txt'):
