@@ -3,19 +3,10 @@ import cv2
 import time
 from PIL import Image
 import math
-import firebase_admin
-from firebase_admin import credentials,db 
 from pytz import HOUR, timezone
 from datetime import datetime
 
-# export credential key
-ced = credentials.Certificate("ya.json")
-
-# initiliaze realtime database
-default_app = firebase_admin.initialize_app(ced, {'databaseURL': 'https://integratedcamera-36d77-default-rtdb.firebaseio.com'})
-ref = db.reference('interval')
-
-# login credentials
+#login credentials ftp
 server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
 password = 'b193a4a95ef9fb64'
@@ -65,12 +56,15 @@ os.system("sudo rm -f *.jpg")
 
 do = "jalan"
 interval = 0
+
+mqtt_interval = 1
+
 while(True):
   # firebase get interval
-  try:
-    fbinterval = ref.get() 
-  except:
-    print("Cant get the interval")
+  if os.path.isfile("interval.txt"): 
+     f = open('interval.txt')
+     mqtt_interval =  int(f.read())
+
 
   # getting camera frames
   ret1, frame1 = cam1.read()
@@ -80,7 +74,7 @@ while(True):
   out1.write(frame1)
   out2.write(frame2)  
 
-  if do == "jalan" or interval >= fbinterval*30:
+  if do == "jalan" or interval >= mqtt_interval*15:
     #timestamp
     date = datetime.now()
     tz = timezone("Etc/GMT+7")
