@@ -25,9 +25,9 @@ tz = timezone("Etc/GMT+7")
 date = date.replace(tzinfo=tz)
 
 # video format and save
-format = cv2.VideoWriter_fourcc(*'XVID')
-out1 = cv2.VideoWriter('./'+x+'/cam1_'+str(date)+'.avi', format, 15, (640,480))
-out2 = cv2.VideoWriter('./'+x+'/cam2_'+str(date)+'.avi', format, 15, (640,480))
+format = cv2.VideoWriter_fourcc(*'mp4v')
+out1 = cv2.VideoWriter('./'+x+'/cam1_'+str(date)+'.mp4', format, 15, (640,480))
+out2 = cv2.VideoWriter('./'+x+'/cam2_'+str(date)+'.mp4', format, 15, (640,480))
 
 # checks the first 10 indexes.
 index = 0
