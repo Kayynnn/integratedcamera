@@ -28,6 +28,8 @@ date = date.replace(tzinfo=tz)
 format = cv2.VideoWriter_fourcc(*'mp4v')
 out1 = cv2.VideoWriter('./'+x+'/cam1_'+str(date)+'.mp4', format, 15, (640,480))
 out2 = cv2.VideoWriter('./'+x+'/cam2_'+str(date)+'.mp4', format, 15, (640,480))
+# out1 = cv2.VideoWriter('./'+x+'/cam1_'+str(date)+'.mp4', format, 15, (320,240))
+# out2 = cv2.VideoWriter('./'+x+'/cam2_'+str(date)+'.mp4', format, 15, (320,240))
 
 # checks the first 10 indexes.
 index = 0
