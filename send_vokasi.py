@@ -74,10 +74,12 @@ while True:
                         os.remove(imgname)
                         os.remove(imgname_detect)
                         os.remove('queue.txt')
-                        open('mulai_interval.txt', 'w+')
                         print("dah beres")
                         time.sleep(10)
-        else: os.remove('queue.txt')
+                    else :
+                        os.remove('queue.txt')
+                        os.remove(imgname)
+        open('mulai_interval.txt', 'w+')                
         
 #print(bbox)
 #for classId,confidence, box in zip(classIds.flatten(),confs.flatten(), bbox):
