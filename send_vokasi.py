@@ -77,6 +77,7 @@ while True:
                         open('mulai_interval.txt', 'w+')
                         print("dah beres")
                         time.sleep(10)
+        else: os.remove('queue.txt')
         
 #print(bbox)
 #for classId,confidence, box in zip(classIds.flatten(),confs.flatten(), bbox):
