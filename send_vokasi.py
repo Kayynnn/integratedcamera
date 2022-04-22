@@ -41,8 +41,8 @@ while True:
         print(imgname)
 
         img = cv2.imread(imgname) 
-        cv2.imshow('Output',img)
-        cv2.waitKey(5000)   
+        # cv2.imshow('Output',img)
+        # cv2.waitKey(5000)   
         classIds, confs, bbox = net.detect(img, confThreshold=thres)
         #print(classIds, bbox)
         bbox = list(bbox)
