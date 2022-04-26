@@ -39,6 +39,7 @@ while True:
 
         print("Read queue.txt :", lines)
         ftp = ftplib.FTP(server, user, password)
+<<<<<<< HEAD
         
 
         if os.path.isfile(imgname):
@@ -105,5 +106,63 @@ while True:
 
     #cv2.imshow('output',img)
     
+=======
+        imgname = lines.strip()
+        print(imgname)
+
+        img = cv2.imread(imgname) 
+        # cv2.imshow('Output',img)
+        # cv2.waitKey(5000)   
+        classIds, confs, bbox = net.detect(img, confThreshold=thres)
+        #print(classIds, bbox)
+        bbox = list(bbox)
+        confs = list(np.array(confs).reshape(1,-1)[0])
+        confs = list(map(float,confs))
+        indices = cv2.dnn.NMSBoxes(bbox,confs,thres,nms_threshold)
+
+        if os.path.isfile(imgname):
+
+                for i in indices:
+                    box = bbox[i]
+                    if classNames[classIds[i]-1] == 'person'  :
+                        x,y,w,h = box[0], box[1], box[2], box[3]
+                        cv2.rectangle(img, (x,y),(x+w,y+h), color=(0,255,0), thickness=1)
+                        # cv2.putText(img,classNames[classIds[i]-1].upper(),(box[0]+10,box[1]+20),
+                        # cv2.FONT_HERSHEY_COMPLEX,0.5,(0,255,0),1)
+                        cv2.putText(img,'Person',(box[0]+10,box[1]+20),
+                        cv2.FONT_HERSHEY_COMPLEX,0.5,(0,255,0),1)
+                        cv2.putText(img,str(int(confs[i]*100)) + "%",(box[0]+10,box[1]+40),
+                        cv2.FONT_HERSHEY_COMPLEX,0.5,(0,255,0),1)
+                        
+                        imgname_detect = imgname +'_detect.jpg'
+                        cv2.imwrite(imgname_detect,img)
+
+                        img_send = open(imgname, 'rb')
+                        ftp.storbinary('STOR '+imgname, img_send)
+                        img_send_detect = open(imgname_detect, 'rb')
+                        ftp.storbinary('STOR '+imgname_detect,img_send_detect)
+                        os.remove(imgname)
+                        os.remove(imgname_detect)
+                        os.remove('queue.txt')
+                        print("dah beres")
+                        time.sleep(10)
+                    else :
+                        os.remove('queue.txt')
+                        os.remove(imgname)
+        open('mulai_interval.txt', 'w+')                
+        
+#print(bbox)
+#for classId,confidence, box in zip(classIds.flatten(),confs.flatten(), bbox):
+    # if classId == 1 :
+    #         cv2.rectangle(img,box,color=(0,255,0),thickness=2)
+    #         cv2.putText(img,classNames[classId-1],(box[0]+10,box[1]+30),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)    
+
+             
+           
+        #ftp.quit()
+        
+
+    #cv2.imshow('output',img)
+>>>>>>> b7f354bcc5154b036ca1e286654f70d3b6d885e4
     print("waiting....")
     time.sleep(2)
