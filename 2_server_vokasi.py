@@ -124,3 +124,4 @@ while(True):
     end = time.perf_counter()
     interval = (end - start)
     print(interval)
+    print(gpio_trigger)
