@@ -106,11 +106,11 @@ while(True):
         
     if gpio_trigger != 1:
       interval = 0
-    
+      do = "  "
+      do2 = "mulai interval" 
     
 
-    do = "  "
-    do2 = "mulai interval"
+    
     # getting the interval time after sending
     if os.path.isfile('mulai_interval.txt'):
       os.remove('mulai_interval.txt')
