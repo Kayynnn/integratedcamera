@@ -1,3 +1,4 @@
+import RPi.GPIO as GPIO
 import os
 import cv2
 import time
@@ -5,6 +6,10 @@ from PIL import Image
 import math
 from pytz import HOUR, timezone
 from datetime import datetime
+
+#GPIO Set Up
+GPIO.setmode(GPIO.BCM) 
+GPIO.setup(18,GPIO.IN) #gpio 18, pin 12
 
 #login credentials ftp
 server = 'telematics.transtrack.id'
@@ -58,6 +63,9 @@ interval = 0
 mqtt_interval = 1
 
 while(True):
+
+  #gpio read
+  gpio_trigger = GPIO.input(18)
   # firebase get interval
   if os.path.isfile("interval.txt"): 
      f = open('interval.txt')
@@ -69,7 +77,7 @@ while(True):
   # video write
   out.write(frame)
   
-  if do == "jalan" or interval >= mqtt_interval*15:
+  if do == "jalan" or interval >= mqtt_interval*15 or gpio_trigger:
     #timestamp
     date = datetime.now()
     tz = timezone("Etc/GMT+7")
@@ -96,8 +104,10 @@ while(True):
     with open('queue.txt', 'w+') as f:
       f.write(imgname)
         
-
-    interval = 0
+    if gpio_trigger != 1:
+      interval = 0
+    
+    
 
     do = "  "
     do2 = "mulai interval"
