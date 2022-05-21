@@ -108,12 +108,12 @@ while(True):
       interval = 0
       do = "  "
       do2 = "mulai interval" 
+      if os.path.isfile('mulai_interval.txt'):
+            os.remove('mulai_interval.txt')    
     
-
     
     # getting the interval time after sending
-    if os.path.isfile('mulai_interval.txt'):
-      os.remove('mulai_interval.txt')
+    
 
   # timer start
   if do2 == "mulai interval" and os.path.isfile('mulai_interval.txt'):

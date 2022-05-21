@@ -1,109 +1,124 @@
 import os
-import ftplib
-import time
 import cv2
-import numpy as np
+import time
+from PIL import Image
+import math
+from pytz import HOUR, timezone
+from datetime import datetime
 
-
-
+#login credentials ftp
 server = 'telematics.transtrack.id'
 user = '15874661a9be9feafb0'
 password = 'b193a4a95ef9fb64'
 
+import subprocess
+x = ""
 
-nms_threshold = 0.2
-thres = 0.45
+# while x == "":
+#   x = subprocess.check_output("ls ./", shell=True)
+#   x = str(x.strip()).strip("b\'")
+#   print(x)
 
-classNames = 'person'
-classFile = 'coco.names'
-with open(classFile) as f :
-    classNames = f.read().rstrip('\n').split('\n')
+# video time stamp
+date = datetime.now()
+tz = timezone("Etc/GMT+7")
+date = date.replace(tzinfo=tz)
 
-#print(classNames)
+# video format and save
+format = cv2.VideoWriter_fourcc(*'mp4v')
+out1 = cv2.VideoWriter('./'+x+'/cam1_'+str(date)+'.mp4', format, 15, (640,480))
+out2 = cv2.VideoWriter('./'+x+'/cam2_'+str(date)+'.mp4', format, 15, (640,480))
 
-configPath = 'ssd_mobilenet_v3_large_coco_2020_01_14.pbtxt'
-weightsPath = 'frozen_inference_graph.pb'
+# checks the first 10 indexes.
+index = 0
+arr = []
+i = 10
+while i > 0:
+    cap = cv2.VideoCapture(index)
+    # ret, frame = cap.read()
+    if cap.read()[0]:
+        arr.append(index)
+        # cv2.imshow('frame', frame)
+        # time.sleep(5)
+        cap.release()
+    index += 1
+    i -= 1
+print(arr)
 
-net = cv2.dnn_DetectionModel(weightsPath,configPath)
-net.setInputSize(320,320)
-net.setInputScale(1.0/127.5)
-net.setInputMean((127.5, 127.5, 127.5))
-net.setInputSwapRB(True)
+# camera id
+cam1 = cv2.VideoCapture(arr[0])
+cam2 = cv2.VideoCapture(arr[1])
 
-while True:
-    if os.path.isfile('queue.txt'):
-        f = open('queue.txt')
-        lines = f.read()
-        imgname = lines.strip()
-        print(imgname)
+# make sure theres no extra files when starting program
+if os.path.isfile('mulai_interval.txt'):
+      os.remove('mulai_interval.txt')
+os.system("sudo rm -f *.jpg")
 
-        print("Read queue.txt :", lines)
-        ftp = ftplib.FTP(server, user, password)
-        
+do = "jalan"
+interval = 0
 
-        if os.path.isfile(imgname):
-             
-                img = cv2.imread(imgname) 
-                # cv2.imshow('Output',img)
-                # cv2.waitKey(5000)   
-                classIds, confs, bbox = net.detect(img, confThreshold=thres)
-                #print(classIds, bbox)
-                bbox = list(bbox)
-                confs = list(np.array(confs).reshape(1,-1)[0])
-                confs = list(map(float,confs))
-                indices = cv2.dnn.NMSBoxes(bbox,confs,thres,nms_threshold)
+mqtt_interval = 1
 
-                count = 0
-                for i in indices:
-                    box = bbox[i]
-                    if classNames[classIds[i]-1] == 'person'  :
-                        x,y,w,h = box[0], box[1], box[2], box[3]
-                        cv2.rectangle(img, (x,y),(x+w,y+h), color=(0,255,0), thickness=1)
-                        # cv2.putText(img,classNames[classIds[i]-1].upper(),(box[0]+10,box[1]+20),
-                        # cv2.FONT_HERSHEY_COMPLEX,0.5,(0,255,0),1)
-                        cv2.putText(img,'Person',(box[0]+10,box[1]+20),
-                        cv2.FONT_HERSHEY_COMPLEX,0.5,(0,255,0),1)
-                        cv2.putText(img,str(int(confs[i]*100)) + "%",(box[0]+10,box[1]+40),
-                        cv2.FONT_HERSHEY_COMPLEX,0.5,(0,255,0),1)
-                        
-                        count+= 1 
-                        
-                    
-                if count>0:
-                    print(str(count) + " Human Detected")
-                    
-                    imgname_detect = imgname +'_detect.jpg'
-                    cv2.imwrite(imgname_detect,img)
+while(True):
+  # firebase get interval
+  if os.path.isfile("interval.txt"): 
+     f = open('interval.txt')
+     mqtt_interval =  int(f.read())
 
-                    img_send = open(imgname, 'rb')
-                    ftp.storbinary('STOR '+imgname, img_send)
-                    img_send_detect = open(imgname_detect, 'rb')
-                    ftp.storbinary('STOR '+imgname_detect,img_send_detect)
-                    os.remove(imgname_detect)
-                    print("Sending success")
-                    #time.sleep(10)
-                else :
-                    print("no human")
-                    #time.sleep(10)
-                
-                os.remove(imgname)           
-        
-        count = 0
-        os.remove('queue.txt')                    
-        open('mulai_interval.txt', 'w+')                
-        
-#print(bbox)
-#for classId,confidence, box in zip(classIds.flatten(),confs.flatten(), bbox):
-    # if classId == 1 :
-    #         cv2.rectangle(img,box,color=(0,255,0),thickness=2)
-    #         cv2.putText(img,classNames[classId-1],(box[0]+10,box[1]+30),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)    
 
-             
-           
-        #ftp.quit()
-        
+  # getting camera frames
+  ret1, frame1 = cam1.read()
+  ret2, frame2 = cam2.read()
 
-    #cv2.imshow('output',img)
+  # video write
+  out1.write(frame1)
+  out2.write(frame2)  
+
+  if do == "jalan" or interval >= mqtt_interval*15:
+    #timestamp
+    date = datetime.now()
+    tz = timezone("Etc/GMT+7")
+    date = date.replace(tzinfo=tz)
+
+    # naming image files based on camera and timestamp
+    imgname = [ "cam1_"+str(date)+".jpg",
+                "cam2_"+str(date)+".jpg"]
+                # "cam3_"+str(date)+".jpg",
+                # "cam4_"+str(date)+".jpg"]    
+
+    # writing images
+    cv2.imwrite(imgname[0], frame1)
+    cv2.imwrite(imgname[1], frame2)
+
+    # resizing the image
+    for i in range(2): 
+      foo = Image.open(imgname[i])
+      x, y = foo.size
+      mult = 1.5
+      x2, y2 = math.floor(x*mult), math.floor(y*mult)
+      foo = foo.resize((x2,y2),Image.ANTIALIAS)
+      foo.save(imgname[i],optimize=True, quality=50)
     
-    print("waiting....")
-    time.sleep(2)
+    # making queue file for sending
+    with open('queue.txt', 'w+') as f:
+        for x in imgname:
+            f.write(x)
+            f.write('\n')
+
+    interval = 0
+
+    do = "  "
+    do2 = "mulai interval"
+    # getting the interval time after sending
+    if os.path.isfile('mulai_interval.txt'):
+      os.remove('mulai_interval.txt')
+
+  # timer start
+  if do2 == "mulai interval" and os.path.isfile('mulai_interval.txt'):
+    start = time.perf_counter()
+    do2 = "  " 
+  # timer ends
+  if os.path.isfile('mulai_interval.txt'):
+    end = time.perf_counter()
+    interval = (end - start)
+    print(interval)
