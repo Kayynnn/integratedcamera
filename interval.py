@@ -2,10 +2,17 @@ import random
 import os
 from paho.mqtt import client as mqtt_client
 
+import subprocess
+
+piserialnum = subprocess.check_output("cat /sys/firmware/devicetree/base/serial-number", shell=True)
+piserialnum = str(piserialnum.strip()).strip("b\'")       
+piserialnum = piserialnum[0:16]
+print(piserialnum+'abc')
 
 broker = 'broker.emqx.io'
 port = 1883
-topic = "device/123456789012"
+topic = "device/"+ piserialnum
+print(topic)
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 # username = 'emqx'
