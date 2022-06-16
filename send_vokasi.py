@@ -89,8 +89,9 @@ while True:
                 os.remove(imgname)           
         
         count = 0
-        os.remove('queue.txt')                    
-        open('mulai_interval.txt', 'w+')                
+        os.remove('queue.txt')
+        if  os.path.isfile(imgname) == False:                    
+           open('mulai_interval.txt', 'w+')                
         
 #print(bbox)
 #for classId,confidence, box in zip(classIds.flatten(),confs.flatten(), bbox):
