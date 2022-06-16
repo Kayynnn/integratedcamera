@@ -58,6 +58,7 @@ if os.path.isfile('mulai_interval.txt'):
 os.system("sudo rm -f *.jpg")
 
 do = "jalan"
+do2 = " "
 interval = 0
 
 mqtt_interval = 1

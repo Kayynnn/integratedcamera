@@ -3,7 +3,8 @@ import ftplib
 import time
 import cv2
 import numpy as np
-
+from pytz import HOUR, timezone
+from datetime import datetime
 
 
 server = 'telematics.transtrack.id'
@@ -79,6 +80,16 @@ while True:
                     ftp.storbinary('STOR '+imgname, img_send)
                     img_send_detect = open(imgname_detect, 'rb')
                     ftp.storbinary('STOR '+imgname_detect,img_send_detect)
+                    
+                    date = datetime.now()
+                    tz   = timezone("Etc/GMT+7")
+                    date = date.replace(tzinfo=tz)
+                    date = str(date)
+                    date = date[0:19]
+       
+                    with open('sendingLog.txt', 'a') as flog:
+                         flog.write('\nPicture :  '+ imgname + ' Time : ' +date)                    
+                   
                     os.remove(imgname_detect)
                     print("Sending success")
                     #time.sleep(10)
@@ -87,11 +98,10 @@ while True:
                     #time.sleep(10)
                 
                 os.remove(imgname)           
-        
+
         count = 0
-        os.remove('queue.txt')
-        if  os.path.isfile(imgname) == False:                    
-           open('mulai_interval.txt', 'w+')                
+        os.remove('queue.txt')                    
+        open('mulai_interval.txt', 'w+')                
         
 #print(bbox)
 #for classId,confidence, box in zip(classIds.flatten(),confs.flatten(), bbox):

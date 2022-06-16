@@ -1,25 +1,19 @@
 import random
-import os
 from paho.mqtt import client as mqtt_client
-import time
+from pytz import HOUR, timezone
+from datetime import datetime
 
-def getserial():
-    # Extract serail from cpuinfo file
-    cpuserial = "0000000000000000"
-    try:
-        f = open('/proc/cpuinfo','r')
-        for line in f:
-            if line[0:6]=='Serial':
-                cpuserial = line[10:26]
-        f.close()
-    except:
-        cpuserial = "ERROR0000000000"
-    return cpuserial    
+import subprocess
 
-piserialnum = getserial()
+piserialnum = subprocess.check_output("cat /sys/firmware/devicetree/base/serial-number", shell=True)
+piserialnum = str(piserialnum.strip()).strip("b\'")       
+piserialnum = piserialnum[0:16]
+print(piserialnum)
+
 broker = 'broker.emqx.io'
 port = 1883
-topic = "device/" + piserialnum
+topic = "device/"+ piserialnum
+print(topic)
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 # username = 'emqx'
@@ -44,9 +38,16 @@ def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
        # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         x = msg.payload.decode()
+        date = datetime.now()
+        tz   = timezone("Etc/GMT+7")
+        date = date.replace(tzinfo=tz)
+        date = str(date)
+        date = date[0:19]
         print(x)
         with open('interval.txt', 'w+') as f:
             f.write(x)
+        with open('intervalLog.txt', 'a') as flog:
+            flog.write('\nInterval : '+ x + ' Time : ' +date)   
         
        # lines = 0
         #if os.path.isfile('interval.txt'):
@@ -62,12 +63,9 @@ def subscribe(client: mqtt_client):
 def run():
     client = connect_mqtt()
     subscribe(client)
-    client.loop_start()
+    client.loop_forever()
     lines = 0
     
 
 while True:
     run()
-    time.sleep(2)
-    # client = connect_mqtt()
-    # subscribe(client)
