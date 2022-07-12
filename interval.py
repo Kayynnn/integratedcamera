@@ -36,15 +36,16 @@ def connect_mqtt() -> mqtt_client:
 
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
-       # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+       # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic") 
         x = msg.payload.decode()
+       # x = "\'" + x + "\'"
         date = datetime.now()
         tz   = timezone("Etc/GMT+7")
         date = date.replace(tzinfo=tz)
         date = str(date)
         date = date[0:19]
         print(x)
-        with open('interval.txt', 'w+') as f:
+        with open('remote_conf.txt', 'w+') as f:
             f.write(x)
         with open('intervalLog.txt', 'a') as flog:
             flog.write('\nInterval : '+ x + ' Time : ' +date)   

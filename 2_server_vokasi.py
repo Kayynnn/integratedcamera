@@ -6,7 +6,7 @@ from PIL import Image
 import math
 from pytz import HOUR, timezone
 from datetime import datetime
-
+import json
 #GPIO Set Up
 GPIO.setmode(GPIO.BCM) 
 GPIO.setup(18,GPIO.IN) #gpio 18, pin 12
@@ -60,25 +60,35 @@ os.system("sudo rm -f *.jpg")
 do = "jalan"
 do2 = " "
 interval = 0
-
+gpio_trigger = 0
+gpio_active = 0
 mqtt_interval = 1
-
+capture = False
 while(True):
 
-  #gpio read
-  gpio_trigger = GPIO.input(18)
-  # firebase get interval
-  if os.path.isfile("interval.txt"): 
-     f = open('interval.txt')
-     mqtt_interval =  int(f.read())
-
-
+    
+  # mqtt get interval
+  if os.path.isfile("remote_conf.txt"): 
+     f = open('remote_conf.txt')
+     conf = str(f.read().strip())
+     print("conf :",conf+"~")
+     conf = json.loads(conf)
+     if "interval" in conf:
+         mqtt_interval =  conf["interval"]
+         gpio_active = conf["gpio"]
+     if "capture" in conf:
+         capture = True
+     os.remove("remote_conf.txt") 
+     #gpio read
+  if gpio_active:
+     print("asassadhfkjsdf")
+     gpio_trigger = GPIO.input(18)
   # getting camera frames
   ret, frame = cam.read()
   # video write
   out.write(frame)
   
-  if do == "jalan" or interval >= mqtt_interval*15 or gpio_trigger:
+  if do == "jalan" or interval >= mqtt_interval*15 or gpio_trigger or capture:
     #timestamp
     date = datetime.now()
     tz = timezone("Etc/GMT+7")
@@ -111,7 +121,8 @@ while(True):
       do2 = "mulai interval" 
       if os.path.isfile('mulai_interval.txt'):
             os.remove('mulai_interval.txt')    
-    
+    if capture:
+       capture = False    
     
     # getting the interval time after sending
     
